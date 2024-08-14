@@ -1,0 +1,334 @@
+<!doctype html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="javascript" src="static/js/loushangfunction.js"></script>
+<script language="javascript" type="text/javascript" src="static/js/floatimg.js"></script>
+<script type="text/javascript" src="static/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="static/js/md5.js"></script>
+<script type="text/javascript" src="static/js/ccLogin.js"></script>
+<object id="InfoSecNetSign1" codebase="NetSign20.cab#version=2,0,38,10" style="WIDTH: 0px; HEIGHT: 0px" classid="clsid:B3B938C4-4190-4F37-8CF0-A92B0A91CC77" viewastext=""></object>
+<html>
+<head>
+    <meta charset="gb2312">
+<title>门户登录</title>
+<style type="text/css">
+ 
+body 
+ {
+scrollbar-face-color: #DEE3E7;
+scrollbar-highlight-color: #FFFFFF;
+scrollbar-shadow-color: #DEE3E7;
+scrollbar-3dlight-color: #D1D7DC;
+scrollbar-arrow-color:  #006699;
+scrollbar-track-color: #EFEFEF;
+scrollbar-darkshadow-color: #98AAB1;
+ }
+ td{font-size:9pt}
+ input{color: #003366; background-color: #87B7DE; border: 1 solid #2D85CC;width:160px}
+.nav-panel{
+    width: 50%;
+    height: 50px;
+    line-height: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+.nav-btn{
+    width: 50%;
+    font-size: 18px;
+    line-height: 50px;
+    height: 50px;
+    padding: 0 20px;
+    border-bottom: 2px solid #cccccc;
+    cursor: pointer;
+    text-align: center;
+    color: rgb(40,111,178);
+}
+.nav-btn.selected{
+    font-weight: bold;
+    color: rgb(40,111,178);
+    border-bottom: 2px solid rgb(40,111,178);
+}
+
+#accountPanel{
+}
+
+#qrcodePanel{
+    display: none;
+}
+
+#qrcodePanel iframe{
+    overflow: hidden;
+}
+
+.scan-title{
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #333333;
+    font-size: 18px;
+}
+#cc_work{
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    padding-top: 10px;
+    text-align: center;
+    margin: auto;
+}
+</style>
+
+<script>
+  $(function(){
+      var hasConsole = typeof console != 'undefined'
+      window.isIe = navigator.userAgent.indexOf("MSIE") > -1 || !!window.ActiveXObject || "ActiveXObject" in window
+      if (hasConsole) {
+        console.log('window.isIe', window.isIe)
+      }
+
+      if (window.isIe) {
+        $('.nav-panel').hide()
+        $('#qrcodePanel').hide()
+      } else {
+        $('.nav-panel').show()
+        var ccLogin = new CCLogin({
+            id: 'cc_work',
+            appid: '18489456252158066',
+            cid: '18489456252158053',
+            redirect_uri: 'http://10.99.134.43/ScanLogin',
+            server_ip: 'http://10.99.211.86',
+            app_name: '门户系统',
+            lang: 'zh', //zh en
+            self_redirect: false
+        });
+          
+        $('.nav-btn').on('click', function() {
+            $('.nav-btn').removeClass('selected')
+            $(this).addClass('selected')
+            if ($(this).attr('id') == 'account') {
+                $('#accountPanel').show()
+                $('#qrcodePanel').hide()
+            } else {
+                $('#accountPanel').hide()
+                $('#qrcodePanel').show()
+            }
+        })
+      }
+  })
+</script>
+
+<script language="javascript">
+if(self!=top){top.location=self.location;}
+var bikky = document.cookie;
+var xmlHttp; 
+function getCookie(name) {
+	 // alert(bikky);
+    var index = bikky.indexOf(name + "=");
+    if (index == -1) return null;
+    index = bikky.indexOf("=", index) + 1;
+    var endstr = bikky.indexOf(";", index);
+    if (endstr == -1) endstr = bikky.length;
+    return unescape(bikky.substring(index, endstr));
+}
+
+var today = new Date();
+var expiry = new Date(today.getTime() + 28 * 24 * 60 * 60 * 1000);
+function setCookie(name, value) { 
+    if (value != null && value != "")
+      document.cookie=name + "=" + escape(value) + "; expires=" + expiry.toGMTString();
+    bikky = document.cookie; 
+}
+function setall()
+{
+	var j_username = document.forms[0].j_username.value;
+	setCookie("j_username",j_username);
+	var j_password = document.forms[0].j_password.value;
+	//setCookie("j_password",j_password);
+}
+ 
+function init()
+{
+	var dn = "null";
+    //兰州单点登录增加是否插入USBKey判断
+    buttonEnumCertsDNByIssers_onclick();
+	var j_username = getCookie("j_username");
+	if (j_username != null && j_username != "null") {	
+		document.forms[0].j_username.value = j_username;
+	}
+	var j_password = getCookie("j_password");
+	if (j_password != null && j_password != "null") {
+		//alert(j_password);
+		document.forms[0].j_password.value = j_password;
+	}
+	if(dn != null && dn!="null"){
+		doLoginForCA();
+	}
+}
+//兰州单点登录增加是否插入USBKey判断
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function buttonEnumCertsDNByIssers_onclick(){
+   if(InfoSecNetSign1.NSEnumCertsDNByIssers("C=CN,O=Tobacco,CN=甘肃工业CA")!="")
+   {
+   		window.location="https://10.99.131.164/jsp/login.jsp";
+   }
+   
+}
+function doLogin(){
+	if(!check()) return;
+	setall();
+	
+	//登录时，密码传送密文
+	var salt = "1#2$3%4(5)6@7!poeeww$3%4(5)djjkkldss";
+	var j_password = document.forms[0].j_password.value;
+	var passwordVal = j_password ? $.trim(j_password) : ""; 
+	document.forms[0].j_password.value = hex_md5(passwordVal + "{" + salt + "}");
+	
+    document.forms[0].action ="/j_bsp_security_check/up";
+   	document.forms[0].submit();
+}
+function doLoginForCA(){
+	//登录时，密码传送密文
+	var salt = "1#2$3%4(5)6@7!poeeww$3%4(5)djjkkldss";
+	var j_password = document.forms[0].j_password.value;
+	var passwordVal = j_password ? $.trim(j_password) : ""; 
+	document.forms[0].j_password.value = hex_md5(passwordVal + "{" + salt + "}");
+	
+    document.forms[0].action ="/j_bsp_security_check/up";
+   	document.forms[0].submit();
+}
+function check(){
+	var j_username = document.forms[0].j_username;
+	if(trim(j_username.value)==""){
+		alert("请输入用户名");
+		j_username.focus();
+		return false;
+	}
+	j_username.value = trim(j_username.value);
+	var j_password = document.forms[0].j_password;
+	if(trim(j_password.value)==""){
+		alert("请输入密码");
+		j_password.focus();
+		return false;
+	}
+	return true;
+	
+}
+//当回车按下时,/=47,*=42,+=43
+function keypress(form0)	
+{
+	if(event.keyCode==13||event.keyCode==42)	//回车,*
+	{
+      doLogin();
+	}
+
+}
+function userkeypress(){
+		if(event.keyCode==13)	
+	{
+		document.forms[0].j_password.select();
+		document.forms[0].j_password.focus();
+	}
+}
+</script>
+</head>
+
+<body style="background-color:#f5f5f5" onload="init();">
+<!--加入以下代码，显示奥运图片-->
+<div style="position:absolute;top:0;right:0;z-index:-1" id="float_image"></div>
+<script language="JavaScript">
+var fi = new floatimage("login");
+fi.show("float_image");
+</script>
+<!--显示奥运图片完毕-->
+<table border="0" width="100%" cellpadding="0">
+<form name="frmLogin" method="post" action=""><div><input type="hidden" name="org.loushang.web.taglib.util.token" value="1b5ba4c689c85a8f86ed28e6addb336f"></div><input type="hidden" name="sysFunctionId" value="">
+
+  <tr>
+    <td width="100%" height="50px"></td>
+  </tr>
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellpadding="0">
+        <tr>
+          <td width="45%" height="85px"><div style="margin-left:180px;"><img src="http://39.106.149.243:9000/yunmall-app/1723627412495.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20240814%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240814T092341Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=c8c9e25cd0a8b234d56b2bf335a42cf662d73e137b4cce8d2503fcc02fd89d85"></div></td>
+          <td width="50%"><center><img src="http://39.106.149.243:9000/yunmall-app/1723626986818.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20240814%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240814T091706Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=54cf5ffcc8f6a0866e8a8e149c288cdb117080d104deb459d666a0691ba7a861"></center></td>
+        </tr>
+        <tr>
+          <td width="45%" height="354px" align="right"><img src="http://39.106.149.243:9000/yunmall-app/1723627270471.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20240814%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240814T092120Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=ecf32640da727e6f194ce80c36ae202f38839cef4285d41f399c58507e66278b"></td>
+          <td width="50%">
+            <div align="center">
+              <center>
+                <div border="0" width="70%" cellpadding="0">
+                  <div class="nav-panel">
+                    <div id="account" class="nav-btn selected">账号登录</div>
+                    <div id="qrcode" class="nav-btn">扫码登录</div>
+                  </div>
+                  <div id="accountPanel" style="height: 240px;">
+                    <div style="height:36px; width:266px;"></div>
+                    <div style="border:1px #ccc solid; width:266px; height:36px; background:#fff; line-height: 36px; margin-bottom:30px;">
+                      <div style="float:left;margin-left:20px;"><font color="#004184">用 户 名：</font>  </div>
+                      <div style="float:left"><input type="text" name="j_username" size="10" value="" onkeypress="userkeypress();" style="border:0px; margin-top:8px; background:#fff;"></div>
+                    </div>
+                    <div style="border:1px #ccc solid; width:266px; height:36px; background:#fff; line-height: 36px; margin-bottom:30px;">
+                      <div style="float:left;margin-left:20px;"><font color="#004184">密&nbsp;&nbsp;&nbsp; 码：</font></div>
+                      <div style="float:left"><input type="password" name="j_password" size="10" value="" onkeypress="keypress();" style="border:0px; margin-top:5px; background:#fff;"></div>
+                    </div>
+                    <div style="width:266px;">
+                      <div style="float:left">
+                        <img border="0" src="http://39.106.149.243:9000/yunmall-app/1723627653534.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=minioadmin%2F20240814%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240814T092740Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=23fd30cea22b71a34ee7a682e1709cf72e783e58f24cda06f8809d2eebd411d7" width="148" height="48" style="cursor:hand" onclick="doLogin();">
+                      </div>
+                    </div>
+                  </div>
+                  <div id="qrcodePanel" style="height: 240px;">
+                    <div id="cc_work" style="width: 200px;height: 200px;"></div>
+                    <div class="scan-title">请使用移动办公APP扫码</div>
+                  </div>
+                </div>
+              </center>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</form></table>
+</form>
+</body>
+</html>
